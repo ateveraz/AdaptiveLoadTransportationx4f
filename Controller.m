@@ -27,23 +27,13 @@ classdef Controller < matlab.System
             obj.quat = Quaternions();
         end
 
-        function [tau, thrust] = stepImpl(obj, quat, w, u, xp)
-            fu = u + obj.mass * obj.gravity;
-
-            fu_norm = fu / norm(fu);
-            quatF = obj.quat.product([0 ; fu_norm], obj.quat.conj(obj.Fb));
-            qd = obj.quat.exp(obj.quat.log(quatF)/2);
-
-            quat_error = obj.computeQuaternionError(qd, quat);
-
-            s = w + obj.rho * quat_error(2:4);
+        function [tau, thrust] = stepImpl(obj, u, qe, we)
+            s = we + obj.rho * qe(2:4);
             tau = - obj.Kd*s - obj.beta * tanh( obj.gamma * s);
-            % logQ = 2 * obj.quat.log(quat_error)';
-            % tau = -obj.Kp*logQ - obj.Kd*w;
-            thrust = norm(fu);
+            thrust = norm(u);
         end
 
-        function resetImpl(obj)
+        function resetImpl(~)
             % Initialize / reset internal properties
         end
 
