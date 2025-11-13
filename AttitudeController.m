@@ -1,9 +1,5 @@
-classdef Controller < matlab.System
+classdef AttitudeController < matlab.System
     % Controller Matlab system object for an attitude controller.
-
-    properties (Access = private)
-        quat;
-    end
 
     properties (Access = public)
         Kd = 2.0;
@@ -55,20 +51,6 @@ classdef Controller < matlab.System
         function [tau, thrust] = isOutputFixedSizeImpl(~)
             tau = true;
             thrust = true;
-        end
-    end
-
-    methods (Access = private)
-        function qe = computeQuaternionError(obj, qd, q)
-            qd_conj = obj.quat.conj(qd);
-            qe = obj.quat.product(qd_conj, q);
-        end
-
-        function qd = desiredQuaternion(obj, fu)
-            qd = [0 0 0 0]';
-            qd(1) = dot(obj.e3, fu);
-            qd(2:4) = cross(obj.e3, fu);
-            qd = qd / norm(qd);
         end
     end
 end
