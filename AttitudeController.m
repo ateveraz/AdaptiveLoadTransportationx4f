@@ -1,26 +1,21 @@
 classdef AttitudeController < matlab.System
-    % Controller Matlab system object for an attitude controller.
+    % AttitudeController Matlab system object for an attitude controller.
 
     properties (Access = public)
         Kd = 2.0;
         beta = 0.5;
         gamma = 1.0;
         rho = 5.0;
-        mass = 0.4;
+    end
+    
+    properties (Access = private)
         gravity = [0 0 9.81]';
         Fb = [0 0 0 1]';
         e3 = [0 0 1]';
     end
 
-    % Pre-computed constants or internal states
-    % properties (Access = private)
-
-    % end
-
     methods (Access = protected)
-        function setupImpl(obj)
-            % Perform one-time calculations, such as computing constants
-            obj.quat = Quaternions();
+        function setupImpl(~)
         end
 
         function [tau, thrust] = stepImpl(obj, u, qe, we)
@@ -30,7 +25,6 @@ classdef AttitudeController < matlab.System
         end
 
         function resetImpl(~)
-            % Initialize / reset internal properties
         end
 
         function [tau, thrust] = getOutputSizeImpl(~)
