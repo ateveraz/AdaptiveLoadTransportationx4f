@@ -13,16 +13,24 @@ classdef DesiredAttitude < matlab.System
             obj.quat = Quaternions();
         end
 
-        function [qe, we] = stepImpl(obj, fu, w, q)
+        function [qe, we] = stepImpl(obj, fu, fup, w, q)
+            yaw_d = 0;
             fu_norm = fu / norm(fu);
             quatF = obj.quat.product([0 ; fu_norm], obj.quat.conj(obj.Fb));
-            qd = obj.quat.exp(obj.quat.log(quatF)/2);
+            qd_xy = obj.quat.exp(obj.quat.log(quatF)/2);
+            qd_yaw = obj.quat.exp(yaw_d*obj.Fb/2);
+            qd = obj.quat.product(qd_yaw, qd_xy);
 
             qe = obj.computeQuaternionError(qd, q);
 
-            wd = [0 0 0]';
+            Fuph = (eye(3) - fu * fu') * fup / norm(fu);
+            Fuph = [0; Fuph];
+            Fuh = [0; fu];
 
-            we = w - wd;
+            wfd = obj.quat.product(obj.quat.product(obj.quat.product(obj.Fb, obj.quat.conj(Fuh)), Fuph), obj.quat.conj(obj.Fb));
+            wd = obj.quat.product(obj.quat.product(obj.quat.conj(qd_yaw), wfd), qd_yaw);
+
+            we = w - wd(2:4);
         end
 
         function resetImpl(~)
