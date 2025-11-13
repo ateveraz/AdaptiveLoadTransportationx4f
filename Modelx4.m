@@ -5,19 +5,14 @@ classdef Modelx4 < matlab.System
     % to define a System object.
 
     properties (Access = private)
-        mass = 0.4;
-        inertia_matrix = [2.098e3 63.577538 -2.002648; 63.577538 2.102e3 0.286186; -2.002648 0.286186 4.068e3]*1e-6;
         gravity = 9.81;
         e3 = [0 0 1]';
         quat;
     end
 
     properties (Access = public)
-        linear_position = [0; 0; 0];
-        linear_velocity = [0; 0; 0];
-        quaternion = [1 0 0 0]';
-        angular_velocity = [0; 0; 0];
-        euler_angles = [0 0 0];
+        mass = 0.4;
+        inertia_matrix = [2.098e3 63.577538 -2.002648; 63.577538 2.102e3 0.286186; -2.002648 0.286186 4.068e3]*1e-6;
     end
 
     % Pre-computed constants or internal states
