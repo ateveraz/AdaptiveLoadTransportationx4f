@@ -5,6 +5,11 @@ classdef PositionController < matlab.System
         Kp = 1.0;
         Kd = 2.0;
         Ki = 0.5;
+        mass = 0.4;
+    end
+
+    properties (Access = private)
+        gravity = [0 0 9.81]';
     end
 
     methods (Access = protected)
@@ -12,7 +17,7 @@ classdef PositionController < matlab.System
         end
 
         function [u, up] = stepImpl(obj, e, ep, int_e)
-            u = - obj.Kp * e - obj.Kd * ep - obj.Ki * int_e;
+            u = - obj.Kp * e - obj.Kd * ep - obj.Ki * int_e + obj.mass * obj.gravity;
             up = - obj.Kp * ep - obj.Ki * e;
         end
 
