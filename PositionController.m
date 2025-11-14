@@ -31,7 +31,10 @@ classdef PositionController < matlab.System
             s = ep + obj.alpha * e;
             x = [e; ep];
 
-            [rbf, wp] = obj.nn.compute_update(s, w, x);
+            [Kdhat, wp] = obj.nn.compute_update(s, w, x);
+            
+            rbf = diag(Kdhat) * s;
+
             u = obj.mass * (obj.gravity + xLdpp + obj.alpha*ep) - obj.Kd * s;
             
             up = zeros(3,1); % Fix it ? 

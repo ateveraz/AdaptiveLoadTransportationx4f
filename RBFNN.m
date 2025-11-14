@@ -34,7 +34,7 @@ classdef RBFNN
         function [nn_output, W_dot] = compute_update(obj, s, W, z)
             sigma_vec = obj.compute_sigma(z);
             nn_output = W * sigma_vec;
-            W_dot = obj.Gamma * (s * sigma_vec' - obj.kappa * norm(s) * W);
+            W_dot = obj.Gamma * (abs(s) * sigma_vec' - obj.kappa * norm(s) * W);
         end
 
         function sigma_vec = compute_sigma(obj, z)
