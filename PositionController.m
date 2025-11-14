@@ -27,7 +27,7 @@ classdef PositionController < matlab.System
             obj.nn = RBFNN(mu, eta, obj.Gamma, obj.kappa, obj.dim_out);
         end
 
-        function [u, up, rbf, wp] = stepImpl(obj, xLdpp, e, ep, w) 
+        function [u, rbf, up, wp] = stepImpl(obj, xLdpp, e, ep, w) 
             s = ep + obj.alpha * e;
             x = [e; ep];
 
@@ -43,28 +43,28 @@ classdef PositionController < matlab.System
         function resetImpl(~)
         end
 
-        function [u, up, rbf, wp] = getOutputSizeImpl(obj)
+        function [u, rbf, up, wp] = getOutputSizeImpl(obj)
             u  = [obj.dim_out 1];
             up = [obj.dim_out 1];
             rbf = [obj.dim_out 1];
             wp = [obj.dim_out obj.N_neurons];
         end
 
-        function [u, up, rbf, wp] = getOutputDataTypeImpl(~)
+        function [u, rbf, up, wp] = getOutputDataTypeImpl(~)
             u = 'double';
             up = 'double';
             rbf = 'double';
             wp = 'double';
         end
 
-        function [u, up, rbf, wp] = isOutputComplexImpl(~)
+        function [u, rbf, up, wp] = isOutputComplexImpl(~)
             u = false;
             up = false;
             rbf = false;
             wp = false;
         end
 
-        function [u, up, rbf, wp] = isOutputFixedSizeImpl(~)
+        function [u, rbf, up, wp] = isOutputFixedSizeImpl(~)
             u = true;
             up = true;
             rbf = true;
