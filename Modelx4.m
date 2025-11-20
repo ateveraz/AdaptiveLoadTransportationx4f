@@ -12,7 +12,7 @@ classdef Modelx4 < matlab.System
 
     properties (Access = public)
         mass = 0.4;
-        inertia_matrix = [2.098e3 63.577538 -2.002648; 63.577538 2.102e3 0.286186; -2.002648 0.286186 4.068e3]*1e-6;
+        inertia_matrix = diag([2.1,1.87,3.97])*0.01;
     end
 
     % Pre-computed constants or internal states
@@ -26,10 +26,10 @@ classdef Modelx4 < matlab.System
             obj.quat = Quaternions();
         end
 
-        function [xpp, wp, quatp] = stepImpl(obj, tau, thrust, w, quat)     
+        function [xpp, wp, quatp] = stepImpl(obj, T, tau, thrust, w, quat)     
             wp = obj.attitudeDynamics(tau, w);
             quatp = obj.w2qtp(quat, w);
-            xpp = obj.cartesianDynamics(thrust, quat);
+            xpp = obj.cartesianDynamics(thrust, quat, T);
         end
 
         function resetImpl(obj)
@@ -71,7 +71,7 @@ classdef Modelx4 < matlab.System
             qtp = (1/2)*obj.quat.product(qt, w_qt);
         end
 
-        function xipp = cartesianDynamics(obj, thrust, qt)
+        function xipp = cartesianDynamics(obj, thrust, qt, T)
             % Compute quaternion (qt) in body z-coordinate: qtb
             qtc = obj.quat.conj(qt);
             qtxe3 = obj.quat.product(qt,[0; obj.e3]);
@@ -79,7 +79,7 @@ classdef Modelx4 < matlab.System
             qtb = qtxe3xqtc(2:4); 
 
             % Cartesian Dynamics
-            xipp = thrust*qtb/obj.mass - obj.gravity*obj.e3;
+            xipp = thrust*qtb/obj.mass - obj.gravity*obj.e3 + T/obj.mass;
         end
 
         function S = PCO(~, w)
